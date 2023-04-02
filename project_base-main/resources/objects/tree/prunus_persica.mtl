@@ -1,0 +1,51 @@
+# Blender MTL File: 'prunus_persica.blend'
+# Material Count: 4
+
+newmtl Material__0
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Bump prunus persica bark 1 normals.jpg
+map_Kd prunus persica bark 1 color d.jpg
+
+newmtl Material__1
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Bump prunus persica bark 1 normals.jpg
+map_Kd prunus persica bark 1 color c.jpg
+
+newmtl Material__3
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Bump prunus persica leaf 1 normals.jpg
+map_Kd prunus persica leaf 1 color a.jpg
+map_d prunus persica leaf 1 mask.jpg
+
+newmtl Material__5
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588000 0.588000 0.588000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd prunus persica flower b1.jpg
+map_d prunus persica flower mask.jpg

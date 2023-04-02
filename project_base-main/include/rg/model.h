@@ -14,6 +14,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <rg/Error.h>
+
 class Model {
 public:
     std::vector<Mesh> meshes;

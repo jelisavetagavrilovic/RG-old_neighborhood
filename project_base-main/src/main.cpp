@@ -17,14 +17,12 @@
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
-
 void processInput(GLFWwindow *window);
-
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
+unsigned int loadTexture(char const* path);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -109,7 +107,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
+#ifdef _APPLE_
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
@@ -137,7 +135,7 @@ int main() {
     }
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
 
     programState = new ProgramState;
     programState->LoadFromFile("resources/program_state.txt");
@@ -165,23 +163,57 @@ int main() {
 
     // load models
     // -----------
-    Model ourModel("resources/objects/backpack/backpack.obj");
-    ourModel.SetShaderTextureNamePrefix("material.");
+    //Model ourModel("resources/objects/backpack/backpack.obj");
+    //ourModel.SetShaderTextureNamePrefix("material.");
+    Model ourModelHouse("resources/objects/house/Farm_house.obj");
+    ourModelHouse.SetShaderTextureNamePrefix("material.");
+
+    Model ourModelTree("resources/objects/tree/prunus_persica.obj");
+    ourModelTree.SetShaderTextureNamePrefix("material.");
+
 
     PointLight& pointLight = programState->pointLight;
     pointLight.position = glm::vec3(4.0f, 4.0, 0.0);
+
     pointLight.ambient = glm::vec3(0.2, 0.2, 0.2); // 0.1, 0.1, 0.1
+
     pointLight.diffuse = glm::vec3(0.8, 0.8, 0.8);
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
 
     pointLight.constant = 1.0f;
-    pointLight.linear = 0.09f;
-    pointLight.quadratic = 0.032f;
+    pointLight.linear = 0.0f; //0.09f
+    pointLight.quadratic = 0.0f; // 0.032f
+
+    // plane
+    float planeVertices[] = {
+            // positions         //normals         // texture Coords
+            5.0f,  -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
+            -5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f,
+
+            5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f,
+            5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 2.0f
+    };
+
+    // plane VAO, VBO
+    unsigned int planeVAO, planeVBO;
+
+    glGenVertexArrays(1, &planeVAO);
+    glGenBuffers(1, &planeVBO);
+    glBindVertexArray(planeVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 
-
-    // draw in wireframe
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // load textures
+    unsigned int grassTexture = loadTexture(FileSystem::getPath("resources/textures/grass.jpeg").c_str());
 
     // render loop
     // -----------
@@ -204,7 +236,7 @@ int main() {
 
         // don't forget to enable shader before setting uniforms
         ourShader.use();
-        pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
+        //pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
         ourShader.setVec3("pointLight.position", pointLight.position);
         ourShader.setVec3("pointLight.ambient", pointLight.ambient);
         ourShader.setVec3("pointLight.diffuse", pointLight.diffuse);
@@ -221,17 +253,50 @@ int main() {
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
+
+        // render the loaded model backpack
+        //glm::mat4 model = glm::mat4(1.0f); //inicijalizacija
+        //model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        //ourShader.setMat4("model", model);
+        //ourModel.Draw(ourShader);
+
         // render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model,
-                               programState->backpackPosition); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        glm::mat4 model = glm::mat4(1.0f); //inicijalizacija
+
+        // house
+        model = glm::mat4(1.0f); //inicijalizacija
+        model = glm::translate(model,glm::vec3(0, 10, 0));
+        model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
         ourShader.setMat4("model", model);
-        ourModel.Draw(ourShader);
+        ourModelHouse.Draw(ourShader);
+
+        // trees
+        int xt = -5, yt = 0, zt = 15;
+        for(int i = 0; i < 3; i++)
+        {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model,glm::vec3(xt, yt, zt));
+            model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
+            ourShader.setMat4("model", model);
+            ourModelTree.Draw(ourShader);
+
+            xt += 7;
+        }
+
+
+
+        // floor
+        glBindVertexArray(planeVAO);
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(10, 0, 10));
+        ourShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
 
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
-
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -250,6 +315,7 @@ int main() {
     glfwTerminate();
     return 0;
 }
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -345,4 +411,40 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
     }
+}
+unsigned int loadTexture(char const * path)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data)
+    {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Texture failed to load at path: " << path << std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
