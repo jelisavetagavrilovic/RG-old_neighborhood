@@ -22,7 +22,7 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
-unsigned int loadTexture(char const * path);
+unsigned int loadTexture(char const* path);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -165,8 +165,11 @@ int main() {
     // -----------
     //Model ourModel("resources/objects/backpack/backpack.obj");
     //ourModel.SetShaderTextureNamePrefix("material.");
-    Model ourModel("resources/objects/bench/bench.obj");
-    ourModel.SetShaderTextureNamePrefix("material.");
+    Model ourModelHouse("resources/objects/house/Farm_house.obj");
+    ourModelHouse.SetShaderTextureNamePrefix("material.");
+
+    Model ourModelTree("resources/objects/tree/prunus_persica.obj");
+    ourModelTree.SetShaderTextureNamePrefix("material.");
 
 
     PointLight& pointLight = programState->pointLight;
@@ -176,9 +179,10 @@ int main() {
     pointLight.specular = glm::vec3(1.0, 1.0, 1.0);
 
     pointLight.constant = 1.0f;
-    pointLight.linear = 0.09f;
-    pointLight.quadratic = 0.032f;
+    pointLight.linear = 0.0f; //0.09f
+    pointLight.quadratic = 0.0f; // 0.032f
 
+    // plane
     float planeVertices[] = {
             // positions         //normals         // texture Coords
             5.0f,  -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
@@ -190,8 +194,9 @@ int main() {
             5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 2.0f
     };
 
-    // plane VAO
+    // plane VAO, VBO
     unsigned int planeVAO, planeVBO;
+
     glGenVertexArrays(1, &planeVAO);
     glGenBuffers(1, &planeVBO);
     glBindVertexArray(planeVAO);
@@ -204,8 +209,9 @@ int main() {
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
+
     // load textures
-    unsigned int floorTexture = loadTexture(FileSystem::getPath("resources/textures/tiles.jpeg").c_str());
+    unsigned int grassTexture = loadTexture(FileSystem::getPath("resources/textures/grass.jpeg").c_str());
 
     // render loop
     // -----------
@@ -226,8 +232,6 @@ int main() {
         glClearColor(programState->clearColor.r, programState->clearColor.g, programState->clearColor.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-
         // don't forget to enable shader before setting uniforms
         ourShader.use();
         //pointLight.position = glm::vec3(4.0 * cos(currentFrame), 4.0f, 4.0 * sin(currentFrame));
@@ -247,27 +251,50 @@ int main() {
         ourShader.setMat4("projection", projection);
         ourShader.setMat4("view", view);
 
+
         // render the loaded model backpack
+        //glm::mat4 model = glm::mat4(1.0f); //inicijalizacija
+        //model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        //ourShader.setMat4("model", model);
+        //ourModel.Draw(ourShader);
+
+        // render the loaded model
         glm::mat4 model = glm::mat4(1.0f); //inicijalizacija
-        model = glm::translate(model,
-                               programState->backpackPosition); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+
+        // house
+        model = glm::mat4(1.0f); //inicijalizacija
+        model = glm::translate(model,glm::vec3(0, 10, 0));
+        model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
         ourShader.setMat4("model", model);
-        ourModel.Draw(ourShader);
+        ourModelHouse.Draw(ourShader);
+
+        // trees
+        int xt = -5, yt = 0, zt = 15;
+        for(int i = 0; i < 3; i++)
+        {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model,glm::vec3(xt, yt, zt));
+            model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
+            ourShader.setMat4("model", model);
+            ourModelTree.Draw(ourShader);
+
+            xt += 7;
+        }
+
+
 
         // floor
         glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
         model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(10, 0, 10));
         ourShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
 
-
         if (programState->ImGuiEnabled)
             DrawImGui(programState);
-
 
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -286,6 +313,7 @@ int main() {
     glfwTerminate();
     return 0;
 }
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
