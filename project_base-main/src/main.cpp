@@ -38,6 +38,10 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+// day or night
+bool isDay = true;
+
+
 struct PointLight {
     glm::vec3 position;
     glm::vec3 ambient;
@@ -170,6 +174,12 @@ int main() {
     // tree
     Model ourModelTree("resources/objects/tree/prunus_persica.obj");
     ourModelTree.SetShaderTextureNamePrefix("material.");
+    // road
+    Model road("resources/objects/road/untitled.obj");
+    ourModelTree.SetShaderTextureNamePrefix("material.");
+    // street decorations
+    Model streetBin("resources/objects/streetDecorations/classic bin.obj");
+    streetBin.SetShaderTextureNamePrefix("material.");
 
     // pointlight
     PointLight& pointLight = programState->pointLight;
@@ -186,13 +196,13 @@ int main() {
     // vertices
     float planeVertices[] = {
             // positions         //normals         // texture Coords
-            5.0f,  -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
+            5.0f,  -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 15.0f, 0.0f,
             -5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 15.0f,
 
-            5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
-            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 2.0f,
-            5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 2.0f, 2.0f
+            5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 15.0f, 0.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 15.0f,
+            5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 15.0f, 15.0f
     };
 
     float skyboxVertices[] = {
@@ -271,16 +281,27 @@ int main() {
     // load textures
     unsigned int grassTexture = loadTexture(FileSystem::getPath("resources/textures/grass.jpeg").c_str());
 
-    vector<std::string> faces
+    vector<std::string> day
           {
-                    FileSystem::getPath("resources/textures/skybox/right.png"),
-                    FileSystem::getPath("resources/textures/skybox/left.png"),
-                    FileSystem::getPath("resources/textures/skybox/top.png"),
-                    FileSystem::getPath("resources/textures/skybox/bottom.png"),
-                    FileSystem::getPath("resources/textures/skybox/front.png"),
-                    FileSystem::getPath("resources/textures/skybox/back.png")
+                    FileSystem::getPath("resources/textures/skyboxDay/right.png"),
+                    FileSystem::getPath("resources/textures/skyboxDay/left.png"),
+                    FileSystem::getPath("resources/textures/skyboxDay/top.png"),
+                    FileSystem::getPath("resources/textures/skyboxDay/bottom.png"),
+                    FileSystem::getPath("resources/textures/skyboxDay/front.png"),
+                    FileSystem::getPath("resources/textures/skyboxDay/back.png")
             };
-    unsigned int cubemapTexture = loadCubemap(faces);
+    unsigned int cubemapTextureDay = loadCubemap(day);
+
+    vector<std::string> night
+            {
+                    FileSystem::getPath("resources/textures/skyboxNight/right.jpg"),
+                    FileSystem::getPath("resources/textures/skyboxNight/left.jpg"),
+                    FileSystem::getPath("resources/textures/skyboxNight/top.jpg"),
+                    FileSystem::getPath("resources/textures/skyboxNight/bottom.jpg"),
+                    FileSystem::getPath("resources/textures/skyboxNight/front.jpg"),
+                    FileSystem::getPath("resources/textures/skyboxNight/back.jpg")
+            };
+    unsigned int cubemapTextureNight = loadCubemap(night);
 
 
     // skybox shader configuration
@@ -330,20 +351,20 @@ int main() {
         //model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
         //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
         //ourShader.setMat4("model", model);
-        //ourModel.Draw(ourShader);
+        //ourMOdel.Draw(ourShader);
 
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f); //inicijalizacija
 
         // house
         model = glm::mat4(1.0f); //inicijalizacija
-        model = glm::translate(model,glm::vec3(0, 10, 0));
+        model = glm::translate(model,glm::vec3(0, 9, 0));
         model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
         ourShader.setMat4("model", model);
         ourModelHouse.Draw(ourShader);
 
         // trees
-        int xt = -5, yt = 0, zt = 15;
+        int xt = -5, yt = 0, zt = 17;
         for(int i = 0; i < 3; i++)
         {
             model = glm::mat4(1.0f);
@@ -351,15 +372,34 @@ int main() {
             model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
             ourShader.setMat4("model", model);
             ourModelTree.Draw(ourShader);
-
-            xt += 7;
+            xt += 12;
         }
 
-        // grass
+        // road
+        model = glm::mat4(1.0f);
+        //model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+        model = glm::translate(model,glm::vec3(-25, -1.0f, 0));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(3, 1, 1.8));
+        ourShader.setMat4("model", model);
+        road.Draw(ourShader);
+
+        // bin
+        model = glm::mat4(1.0f);
+        //model = model = glm::translate(model, glm::vec3(-15.0f, 0, -15.0));
+        model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+        ourShader.setMat4("model", model);
+        streetBin.Draw(ourShader);
+
+
+        // tiles
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, grassTexture);
         model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(50, 0, 50));
+        model = glm::scale(model, glm::vec3(10, 0, 10));
         ourShader.setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -370,10 +410,14 @@ int main() {
         view = glm::mat4(glm::mat3(programState->camera.GetViewMatrix())); // remove translation from the view matrix
         skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("projection", projection);
+
         // skybox cube
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        if(isDay)
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureDay);
+        else
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureNight);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // set depth function back to default
@@ -500,6 +544,9 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
     }
+
+    if (key == GLFW_KEY_N && action == GLFW_PRESS)
+        isDay = !isDay;
 }
 unsigned int loadTexture(char const * path)
 {
@@ -522,8 +569,8 @@ unsigned int loadTexture(char const * path)
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_MIRRORED_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
