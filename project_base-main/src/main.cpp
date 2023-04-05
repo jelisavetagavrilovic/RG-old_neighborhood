@@ -59,6 +59,7 @@ struct ProgramState {
     Camera camera;
     bool CameraMouseMovementUpdateEnabled = true;
     glm::vec3 backpackPosition = glm::vec3(0.0f);
+    float backpackRotate = 0.0f;
     float backpackScale = 1.0f;
     PointLight pointLight;
     ProgramState()
@@ -171,12 +172,24 @@ int main() {
     // farm house
     Model ourModelHouse("resources/objects/house/Farm_house.obj");
     ourModelHouse.SetShaderTextureNamePrefix("material.");
+    // old company
+    Model oldCompany("resources/objects/oldHouse/house_01.obj");
+    oldCompany.SetShaderTextureNamePrefix("material.");
+    // brick house
+    Model brickHouse("resources/objects/BrickHouse/Brick_House.obj");
+    brickHouse.SetShaderTextureNamePrefix("material.");
+    // blue house
+    Model blueHouse("resources/objects/blueHouse/HouseSuburban.obj");
+    blueHouse.SetShaderTextureNamePrefix("material.");
+
     // tree
     Model ourModelTree("resources/objects/tree/prunus_persica.obj");
     ourModelTree.SetShaderTextureNamePrefix("material.");
     // road
     Model road("resources/objects/road/untitled.obj");
     ourModelTree.SetShaderTextureNamePrefix("material.");
+
+
     // street decorations
     Model streetBin("resources/objects/streetDecorations/classic bin.obj");
     streetBin.SetShaderTextureNamePrefix("material.");
@@ -196,13 +209,13 @@ int main() {
     // vertices
     float planeVertices[] = {
             // positions         //normals         // texture Coords
-            5.0f,  -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 15.0f, 0.0f,
+            5.0f,  -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 16.0f, 0.0f,
             -5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 15.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 16.0f,
 
-            5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 15.0f, 0.0f,
-            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 15.0f,
-            5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 15.0f, 15.0f
+            5.0f, -0.5f,  5.0f, 0.0f, 1.0f, 0.0f, 16.0f, 0.0f,
+            -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 16.0f,
+            5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 16.0f, 16.0f
     };
 
     float skyboxVertices[] = {
@@ -363,6 +376,33 @@ int main() {
         ourShader.setMat4("model", model);
         ourModelHouse.Draw(ourShader);
 
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -26.0f));
+        model = glm::rotate(model, 1.60f, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.125f, 0.125f, 0.125f));
+        ourShader.setMat4("model", model);
+        oldCompany.Draw(ourShader);
+
+        model = glm::mat4(1.0f);
+        model = model = glm::translate(model, glm::vec3(-38.0f, 0, 0.0));
+        //model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
+        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        blueHouse.Draw(ourShader);
+
+        model = glm::mat4(1.0f);
+        model = model = glm::translate(model, glm::vec3(-38.0f, 0, -10.0));
+        model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        //model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
+        model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        brickHouse.Draw(ourShader);
+
+
+
         // trees
         int xt = -5, yt = 0, zt = 17;
         for(int i = 0; i < 3; i++)
@@ -378,24 +418,25 @@ int main() {
         // road
         model = glm::mat4(1.0f);
         //model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
-        model = glm::translate(model,glm::vec3(-25, -1.0f, 0));
+        model = glm::translate(model,glm::vec3(-20.0f, -1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
-        model = glm::scale(model, glm::vec3(3, 1, 1.8));
+        model = glm::scale(model, glm::vec3(3, 1, 1.7));
         ourShader.setMat4("model", model);
         road.Draw(ourShader);
 
+
         // bin
-        model = glm::mat4(1.0f);
+        //model = glm::mat4(1.0f);
         //model = model = glm::translate(model, glm::vec3(-15.0f, 0, -15.0));
-        model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
-        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
-        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
-        ourShader.setMat4("model", model);
-        streetBin.Draw(ourShader);
+//        model = glm::translate(model, programState->backpackPosition); // translate it down so it's at the center of the scene
+//        //model = glm::scale(model, glm::vec3(programState->backpackScale));    // it's a bit too big for our scene, so scale it down
+//        model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+//        ourShader.setMat4("model", model);
+//        streetBin.Draw(ourShader);
 
 
-        // tiles
+
+        // grass
         glBindVertexArray(planeVAO);
         glBindTexture(GL_TEXTURE_2D, grassTexture);
         model = glm::mat4(1.0f);
@@ -513,7 +554,7 @@ void DrawImGui(ProgramState *programState) {
         ImGui::ColorEdit3("Background color", (float *) &programState->clearColor);
         ImGui::DragFloat3("Backpack position", (float*)&programState->backpackPosition);
         ImGui::DragFloat("Backpack scale", &programState->backpackScale, 0.05, 0.1, 4.0);
-
+        ImGui::DragFloat("rotate", &programState->backpackRotate, 0.05, 0.0, 4.0);
         ImGui::DragFloat("pointLight.constant", &programState->pointLight.constant, 0.05, 0.0, 1.0);
         ImGui::DragFloat("pointLight.linear", &programState->pointLight.linear, 0.05, 0.0, 1.0);
         ImGui::DragFloat("pointLight.quadratic", &programState->pointLight.quadratic, 0.05, 0.0, 1.0);
