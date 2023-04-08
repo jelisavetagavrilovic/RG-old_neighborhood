@@ -47,8 +47,8 @@ in vec3 Normal;
 in vec3 FragPos;
 
 #define NUM_LIGHTS 6
-// uniform PointLight pointLight[NUM_LIGHTS];
-// uniform SpotLight spotLight[NUM_LIGHTS];
+uniform PointLight pointLight[NUM_LIGHTS];
+uniform SpotLight spotLight[NUM_LIGHTS];
 uniform DirLight dirLight;
 uniform Material material;
 uniform vec3 viewPosition;
@@ -122,11 +122,11 @@ void main()
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPosition - FragPos);
     vec3 result = CalcDirLight(dirLight, normal, viewDir);
-//     for(int i = 0; i < NUM_LIGHTS; i++)
-//     {
-//         result +=  CalcPointLight(pointLight[i], normal, FragPos, viewDir);
-//         result += CalcSpotLight(spotLight[i], normal, FragPos, viewDir);
-//     }
+    for(int i = 0; i < NUM_LIGHTS; i++)
+    {
+        result +=  CalcPointLight(pointLight[i], normal, FragPos, viewDir);
+        result += CalcSpotLight(spotLight[i], normal, FragPos, viewDir);
+    }
 
     FragColor = vec4(result, 1.0);
 }
