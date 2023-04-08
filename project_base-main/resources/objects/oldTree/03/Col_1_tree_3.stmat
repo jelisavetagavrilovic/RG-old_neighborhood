@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!-- Generated using SpeedTree tools -->
+<Materials Count="4" Mesh="Col_1_tree_3.obj" FlipOpacity="0">
+	<Material ID="3" Name="Bark_1_Mat" TwoSided="1" UserData="" VertexOpacity="0">
+		<Map Name="Color" File="Col_1_tree_3.png" />
+		<Map Name="Opacity" File="Col_1_tree_3_Opacity.png" />
+		<Map Name="Normal" File="Col_1_tree_3_Normal.png" />
+		<Map Name="Gloss" File="Col_1_tree_3_Gloss.png" />
+		<Map Name="Specular" File="Col_1_tree_3_Specular.png" />
+		<Map Name="Metallic" File="Col_1_tree_3_Metallic.png" />
+		<Map Name="SubsurfaceColor" File="Col_1_tree_3_SubsurfaceColor.png" />
+		<Map Name="SubsurfaceAmount" File="Col_1_tree_3_SubsurfaceAmount.png" />
+		<Map Name="AO" File="Col_1_tree_3_AO.png" />
+		<Map Name="Custom" File="Col_1_tree_3_Custom.png" />
+	</Material>
+	<Material ID="4" Name="Leaf_1_Mat" TwoSided="1" UserData="" VertexOpacity="0">
+		<Map Name="Color" File="Col_1_tree_3.png" />
+		<Map Name="Opacity" File="Col_1_tree_3_Opacity.png" />
+		<Map Name="Normal" File="Col_1_tree_3_Normal.png" />
+		<Map Name="Gloss" File="Col_1_tree_3_Gloss.png" />
+		<Map Name="Specular" File="Col_1_tree_3_Specular.png" />
+		<Map Name="Metallic" File="Col_1_tree_3_Metallic.png" />
+		<Map Name="SubsurfaceColor" File="Col_1_tree_3_SubsurfaceColor.png" />
+		<Map Name="SubsurfaceAmount" File="Col_1_tree_3_SubsurfaceAmount.png" />
+		<Map Name="AO" File="Col_1_tree_3_AO.png" />
+		<Map Name="Custom" File="Col_1_tree_3_Custom.png" />
+	</Material>
+	<Material ID="2" Name="Leaf_2_Mat" TwoSided="1" UserData="" VertexOpacity="0">
+		<Map Name="Color" File="Col_1_tree_3.png" />
+		<Map Name="Opacity" File="Col_1_tree_3_Opacity.png" />
+		<Map Name="Normal" File="Col_1_tree_3_Normal.png" />
+		<Map Name="Gloss" File="Col_1_tree_3_Gloss.png" />
+		<Map Name="Specular" File="Col_1_tree_3_Specular.png" />
+		<Map Name="Metallic" File="Col_1_tree_3_Metallic.png" />
+		<Map Name="SubsurfaceColor" File="Col_1_tree_3_SubsurfaceColor.png" />
+		<Map Name="SubsurfaceAmount" File="Col_1_tree_3_SubsurfaceAmount.png" />
+		<Map Name="AO" File="Col_1_tree_3_AO.png" />
+		<Map Name="Custom" File="Col_1_tree_3_Custom.png" />
+	</Material>
+	<Material ID="5" Name="Leaf_3_Mat" TwoSided="1" UserData="" VertexOpacity="0">
+		<Map Name="Color" File="Col_1_tree_3.png" />
+		<Map Name="Opacity" File="Col_1_tree_3_Opacity.png" />
+		<Map Name="Normal" File="Col_1_tree_3_Normal.png" />
+		<Map Name="Gloss" File="Col_1_tree_3_Gloss.png" />
+		<Map Name="Specular" File="Col_1_tree_3_Specular.png" />
+		<Map Name="Metallic" File="Col_1_tree_3_Metallic.png" />
+		<Map Name="SubsurfaceColor" File="Col_1_tree_3_SubsurfaceColor.png" />
+		<Map Name="SubsurfaceAmount" File="Col_1_tree_3_SubsurfaceAmount.png" />
+		<Map Name="AO" File="Col_1_tree_3_AO.png" />
+		<Map Name="Custom" File="Col_1_tree_3_Custom.png" />
+	</Material>
+</Materials>

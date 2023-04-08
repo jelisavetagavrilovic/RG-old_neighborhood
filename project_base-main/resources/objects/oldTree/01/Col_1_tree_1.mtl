@@ -1,0 +1,39 @@
+# Wavefront Object Material File
+# Generated using SpeedTree tools
+
+newmtl Bark_1_Mat
+map_Kd Col_1_tree_1.png
+map_d Col_1_tree_1_Opacity.png
+map_bump Col_1_tree_1_Normal.png
+bump Col_1_tree_1_Normal.png -bm 1
+Ns 128
+illum 2
+
+
+newmtl Leaf_1_Mat
+map_Kd Col_1_tree_1.png
+map_d Col_1_tree_1_Opacity.png
+map_bump Col_1_tree_1_Normal.png
+bump Col_1_tree_1_Normal.png -bm 1
+Ns 128
+illum 2
+
+
+newmtl Leaf_2_Mat
+map_Kd Col_1_tree_1.png
+map_d Col_1_tree_1_Opacity.png
+map_bump Col_1_tree_1_Normal.png
+bump Col_1_tree_1_Normal.png -bm 1
+Ns 128
+illum 2
+
+
+newmtl Leaf_3_Mat
+map_Kd Col_1_tree_1.png
+map_d Col_1_tree_1_Opacity.png
+map_bump Col_1_tree_1_Normal.png
+bump Col_1_tree_1_Normal.png -bm 1
+Ns 128
+illum 2
+
+
