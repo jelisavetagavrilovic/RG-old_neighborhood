@@ -56,7 +56,6 @@ struct PointLight {
 };
 void setPointLight(Shader shader, PointLight pointLight1, PointLight pointLight2, PointLight pointLight3,
                     PointLight pointLight4, PointLight pointLight5, PointLight pointLight6);
-void setPointLight(Shader shader, PointLight pointLight1);
 
 struct DirLight {
     glm::vec3 direction;
@@ -69,8 +68,6 @@ void setDirLight(Shader shader);
 
 void setSpotLight(Shader shader, PointLight pointLight1, PointLight pointLight2, PointLight pointLight3,
                    PointLight pointLight4, PointLight pointLight5, PointLight pointLight6);
-void setSpotLight(Shader shader, PointLight pointLight1);
-
 
 
 struct ProgramState {
@@ -1051,34 +1048,6 @@ void setDirLight(Shader shader)
     }
 }
 
-// PointLight
-void setPointLight(Shader shader, PointLight pointLight1) {
-    if (isDay) {
-        // light on day
-        shader.setVec3("pointLight.position", pointLight1.position);
-        shader.setVec3("pointLight.ambient", glm::vec3(0.0, 0.0, 0.0));
-        shader.setVec3("pointLight.diffuse", glm::vec3(0.0, 0.0, 0.0));
-        shader.setVec3("pointLight.specular", glm::vec3(0.0, 0.0, 0.0));
-        shader.setFloat("pointLight.constant", pointLight1.constant);
-        shader.setFloat("pointLight.linear", pointLight1.linear);
-        shader.setFloat("pointLight.quadratic", pointLight1.quadratic);
-        shader.setVec3("viewPosition", programState->camera.Position);
-        shader.setFloat("material.shininess", 32.0f);
-    }
-    else
-    {
-        // light on day
-        shader.setVec3("pointLight.position", pointLight1.position);
-        shader.setVec3("pointLight.ambient", pointLight1.ambient);
-        shader.setVec3("pointLight.diffuse", pointLight1.diffuse);
-        shader.setVec3("pointLight.specular", pointLight1.specular);
-        shader.setFloat("pointLight.constant", pointLight1.constant);
-        shader.setFloat("pointLight.linear", pointLight1.linear);
-        shader.setFloat("pointLight.quadratic", pointLight1.quadratic);
-        shader.setVec3("viewPosition", programState->camera.Position);
-        shader.setFloat("material.shininess", 32.0f);
-    }
-}
 void setPointLight(Shader shader, PointLight pointLight1, PointLight pointLight2, PointLight pointLight3,
               PointLight pointLight4, PointLight pointLight5, PointLight pointLight6)
 {
@@ -1206,37 +1175,6 @@ void setPointLight(Shader shader, PointLight pointLight1, PointLight pointLight2
         shader.setFloat("pointLight[5].quadratic", pointLight6.quadratic);
         shader.setVec3("viewPosition", programState->camera.Position);
         shader.setFloat("material.shininess", 32.0f);
-    }
-}
-
-
-// SpotLight
-void setSpotLight(Shader shader, PointLight pointLight1)
-{
-    if (isDay) {
-        shader.setVec3("spotLight.position", pointLight1.position);
-        shader.setVec3("spotLight.direction", glm::vec3(0, 0.0, 0));
-        shader.setVec3("spotLight.ambient", glm::vec3(0.0, 0.0, 0.0));
-        shader.setVec3("spotLight.diffuse", glm::vec3(0.0, 0.0, 0.0));
-        shader.setVec3("spotLight.specular", glm::vec3(0.0, 0.0, 0.0));
-        shader.setFloat("spotLight.constant", pointLight1.constant);
-        shader.setFloat("spotLight.linear", pointLight1.linear);
-        shader.setFloat("spotLight.quadratic", pointLight1.quadratic);
-        shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(2.0f)));
-        shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(24.0f)));
-    }
-    else
-    {
-        shader.setVec3("spotLight.position", pointLight1.position);
-        shader.setVec3("spotLight.direction", glm::vec3(0.2, -1.0, 0));
-        shader.setVec3("spotLight.ambient", glm::vec3(0.0, 0.0, 0.0));
-        shader.setVec3("spotLight.diffuse", glm::vec3(0.7, 0.7, 0.0));
-        shader.setVec3("spotLight.specular", glm::vec3(0.5, 0.5, 0.0));
-        shader.setFloat("spotLight.constant", pointLight1.constant);
-        shader.setFloat("spotLight.linear", pointLight1.linear);
-        shader.setFloat("spotLight.quadratic", pointLight1.quadratic);
-        shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(8.0f)));
-        shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(24.0f)));
     }
 }
 
