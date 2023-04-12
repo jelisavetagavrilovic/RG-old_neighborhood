@@ -51,13 +51,22 @@ struct SpotLight {
 
 uniform sampler2D diffuseMap;
 uniform sampler2D normalMap;
+uniform sampler2D depthMap;
 uniform DirLight dirLight;
 uniform PointLight pointLight[NUM_LIGHTS];
 uniform SpotLight spotLight[NUM_LIGHTS];
 uniform LightsPos lightPos;
 uniform vec3 viewPos;
+uniform float heightScale;
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, int i)
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+{
+    float height =  texture(depthMap, texCoords).r;
+    return texCoords - viewDir.xy * (height * heightScale);
+}
+
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, int i, vec2 texCoords)
 {
     // diffuse
     vec3 lightDir = normalize(fs_in.TangentLightPos[i] - fs_in.TangentFragPos[i]);
@@ -70,7 +79,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, int i)
     // attenuation
     float distance = length(light.position - fs_in.TangentFragPos[i]);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-    vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    // vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    vec3 color = texture(diffuseMap, texCoords).rgb;
 
     // combine results
     vec3 ambient = light.ambient * color;
@@ -82,7 +92,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 viewDir, int i)
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, int i)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, int i, vec2 texCoords)
  {
      vec3 lightDir = normalize(fs_in.TangentLightPos[i] - fs_in.TangentFragPos[i]);
      // diffuse shading
@@ -97,7 +107,8 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, int i)
      float theta = dot(lightDir, normalize(-light.direction));
      float epsilon = light.cutOff - light.outerCutOff;
      float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-     vec3 texColor = vec3(texture(diffuseMap, fs_in.TexCoords));
+     // vec3 texColor = vec3(texture(diffuseMap, fs_in.TexCoords));
+     vec3 texColor = texture(diffuseMap, texCoords).rgb;
 
      // combine results
      vec3 ambient = light.ambient * texColor;
@@ -110,7 +121,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewDir, int i)
  }
 
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec2 texCoords)
 {
     vec3 lightDir = normalize(-light.direction);
     // diffuse shading
@@ -121,7 +132,8 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
 
     // get diffuse color
-    vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    // vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    vec3 color = texture(diffuseMap, texCoords).rgb;
     // ambient
     vec3 ambient = light.ambient * color;
     vec3 diffuse = light.diffuse * diff * color;
@@ -138,13 +150,20 @@ void main()
     normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
     // result
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
-    vec3 result = CalcDirLight(dirLight, normal, viewDir);
+
+
+    vec2 texCoords = fs_in.TexCoords;
+    texCoords = ParallaxMapping(fs_in.TexCoords,  viewDir);
+    if(texCoords.x > 7.5 || texCoords.y > 7.5 || texCoords.x < 0.0 || texCoords.y < 0.0)
+        discard;
+
+    vec3 result = CalcDirLight(dirLight, normal, viewDir, texCoords);
     for(int i = 0; i < NUM_LIGHTS; i++)
     {
         viewDir = normalize(fs_in.TangentViewPos[i] - fs_in.TangentFragPos[i]);
 
-        result += CalcPointLight(pointLight[i], normal, viewDir, i);
-        result +=  CalcSpotLight(spotLight[i], normal, viewDir, i);
+        result += CalcPointLight(pointLight[i], normal, viewDir, i, texCoords);
+        result +=  CalcSpotLight(spotLight[i], normal, viewDir, i, texCoords);
     }
 
     FragColor = vec4(result, 1.0);

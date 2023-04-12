@@ -31,6 +31,7 @@ void renderQuad();
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+float heightScale = 0.0;
 
 // camera
 float lastX = SCR_WIDTH / 2.0f;
@@ -466,7 +467,9 @@ int main() {
     unsigned int grassTexture = loadTexture(FileSystem::getPath("resources/textures/grass.jpeg").c_str());
     unsigned int roadTexture = loadTexture(FileSystem::getPath("resources/textures/road/cobblestone_large_01_diff_4k.jpg").c_str());
     unsigned int roadNormalTexture = loadTexture(FileSystem::getPath("resources/textures/road/cobblestone_large_01_nor_gl_4k.jpg").c_str());
+    unsigned int roadDispTexture =  loadTexture(FileSystem::getPath("resources/textures/road/cobblestone_large_01_disp_4k.png").c_str());
     unsigned int transparentTexture = loadTexture(FileSystem::getPath("resources/textures/bush.png").c_str());
+
 
     vector<std::string> day
           {
@@ -742,10 +745,13 @@ int main() {
         model = glm::mat4(1.0f);
         normalMappingShader.setMat4("model", model);
         normalMappingShader.setVec3("viewPos", programState->camera.Position);
+        normalMappingShader.setFloat("heightScale", heightScale);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, roadTexture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, roadNormalTexture);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, roadDispTexture);
 
         normalMappingShader.setVec3("lightPos.direction[0]", pointLight1.position);
         normalMappingShader.setVec3("lightPos.direction[1]", pointLight2.position);
@@ -753,50 +759,11 @@ int main() {
         normalMappingShader.setVec3("lightPos.direction[3]", pointLight4.position);
         normalMappingShader.setVec3("lightPos.direction[4]", pointLight5.position);
         normalMappingShader.setVec3("lightPos.direction[5]", pointLight6.position);
-
         setDirLight(normalMappingShader);
-//
-//        normalMappingShader.setVec3("lightPos", pointLight1.position);
-//        setDirLight(normalMappingShader);
-//        setPointLight(normalMappingShader, pointLight1);
-//        setSpotLight(normalMappingShader, pointLight1);
-//        renderQuad();
-//
-//        normalMappingShader.setVec3("lightPos", pointLight2.position);
-//        setDirLight(normalMappingShader);
-//        setPointLight(normalMappingShader, pointLight2);
-//        setSpotLight(normalMappingShader, pointLight2);
-//        renderQuad();
-//
-//        normalMappingShader.setVec3("lightPos", pointLight3.position);
-//        setDirLight(normalMappingShader);
-//        setPointLight(normalMappingShader, pointLight3);
-//        setSpotLight(normalMappingShader, pointLight3);
-//        renderQuad();
-//
-//        normalMappingShader.setVec3("lightPos", pointLight4.position);
-//        setDirLight(normalMappingShader);
-//        setPointLight(normalMappingShader, pointLight4);
-//        setSpotLight(normalMappingShader, pointLight4);
-//        renderQuad();
-//
-//        normalMappingShader.setVec3("lightPos", pointLight5.position);
-//        setDirLight(normalMappingShader);
-//        setPointLight(normalMappingShader, pointLight5);
-//        setSpotLight(normalMappingShader, pointLight5);
-//        renderQuad();
-//
-//        normalMappingShader.setVec3("lightPos", pointLight6.position);
-//        setDirLight(normalMappingShader);
-//        setPointLight(normalMappingShader, pointLight6);
-//        setSpotLight(normalMappingShader, pointLight6);
-//        renderQuad();
-
         setPointLight(normalMappingShader, pointLight1, pointLight2, pointLight3, pointLight4, pointLight5, pointLight6);
         setSpotLight(normalMappingShader, pointLight1, pointLight2, pointLight3, pointLight4, pointLight5, pointLight6);
+
         renderQuad();
-
-
 
 
         // draw skybox as last
