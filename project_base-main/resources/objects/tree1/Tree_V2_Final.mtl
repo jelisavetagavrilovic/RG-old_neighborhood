@@ -1,0 +1,46 @@
+# Blender MTL File: 'Tree_V2_Final.blend'
+# Material Count: 4
+
+newmtl bark_tree
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Ka bark_tree.jpg
+map_Kn bark_tree_nor.jpg
+
+newmtl leaves_01
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.1
+illum 2
+map_Ka leaves_01.jpg
+map_d leaves_alpha_inverted.jpg
+
+newmtl leaves_02
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.1
+illum 2
+map_Ka leaves_02.jpg
+map_d leaves_alpha_inverted.jpg
+
+newmtl leaves_03
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.1
+illum 2
+map_Ka leaves_03.jpg
+map_d leaves_alpha_inverted.jpg
