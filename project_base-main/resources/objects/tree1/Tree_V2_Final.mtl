@@ -18,10 +18,10 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
-d 0.1
+d 0.4
 illum 2
 map_Ka leaves_01.jpg
-map_d leaves_alpha_inverted.jpg
+map_Kd leaves_01.jpg
 
 newmtl leaves_02
 Ns 96.078431
@@ -29,10 +29,10 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
-d 0.1
+d 0.4
 illum 2
 map_Ka leaves_02.jpg
-map_d leaves_alpha_inverted.jpg
+map_Kd leaves_02.jpg
 
 newmtl leaves_03
 Ns 96.078431
@@ -40,7 +40,7 @@ Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
-d 0.1
+d 0.4
 illum 2
 map_Ka leaves_03.jpg
-map_d leaves_alpha_inverted.jpg
+map_Kd leaves_03.jpg

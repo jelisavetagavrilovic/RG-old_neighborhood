@@ -10,6 +10,7 @@ d 0
 Tf 1 1 1
 Ni 1.517
 illum 7
+map_Ks glass1.jpeg
 
 newmtl Plastic Matte
 Ka 1 1 1
@@ -17,6 +18,7 @@ Kd 0.94999998807907 0.94999998807907 0.94999998807907
 Ks 1 1 1
 Ns 40
 illum 7
+map_Ka metal.jpeg
 
 newmtl Metal
 Ka 1 1 1
@@ -24,10 +26,11 @@ Kd 0 0 0
 Ks 1 1 1
 Ns 97
 illum 7
+map_Ka metal.jpeg
 
 newmtl Mat
 Ka 1 1 1
-map_Ka Street Lamp.c4d
 Kd 1 1 1
 illum 7
+map_Ka metal.jpeg
 
