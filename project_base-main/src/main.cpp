@@ -187,6 +187,7 @@ int main() {
     Shader blendingShader("resources/shaders/blending.vs", "resources/shaders/blending.fs");
     Shader normalMappingShader("resources/shaders/normal_mapping.vs", "resources/shaders/normal_mapping.fs");
 
+
     // load models
     // -----------
     // farm house
@@ -406,6 +407,7 @@ int main() {
 
     // load textures
     unsigned int grassTexture = loadTexture(FileSystem::getPath("resources/textures/grass.jpeg").c_str());
+    unsigned int grassSpecTexture = loadTexture(FileSystem::getPath("resources/textures/grassSpec.jpg").c_str());
     unsigned int roadTexture = loadTexture(FileSystem::getPath("resources/textures/road/cobblestone_large_01_diff_4k.jpg").c_str());
     unsigned int roadNormalTexture = loadTexture(FileSystem::getPath("resources/textures/road/cobblestone_large_01_nor_gl_4k.jpg").c_str());
     unsigned int roadDispTexture =  loadTexture(FileSystem::getPath("resources/textures/road/cobblestone_large_01_disp_4k.png").c_str());
@@ -436,8 +438,6 @@ int main() {
 
 
     // shader configuration
-
-
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
@@ -450,7 +450,7 @@ int main() {
 
     ourShader.use();
     ourShader.setInt("material.texture_diffuse1", 0);
-    ourShader.setInt("material.texture_specular1", 1);
+    //ourShader.setInt("material.texture_specular1", 1);
 
 
     // render loop
@@ -567,16 +567,6 @@ int main() {
             streetLamp.Draw(ourShader);
         }
 
-        // grass and face culling
-        glEnable(GL_CULL_FACE);
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, grassTexture);
-        model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(10, 0, 10));
-        ourShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDisable(GL_CULL_FACE);
-
         // vegetation
         vector<glm::vec3> vegetationPositions = {
                 glm::vec3(4.1f, 0.82f, -19.7f),
@@ -604,6 +594,30 @@ int main() {
             blendingShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
+
+        // tree
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(24.0f, 0.0f, 25.0f));
+        model = glm::scale(model, glm::vec3(1.62f));
+        blendingShader.setMat4("model", model);
+        tree.Draw(blendingShader);
+
+
+
+        // grass and face culling
+        ourShader.use();
+        glEnable(GL_CULL_FACE);
+        glBindVertexArray(planeVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, grassSpecTexture);
+        model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(10, 0, 10));
+        ourShader.setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisable(GL_CULL_FACE);
+
 
         // light
         lightCubeShader.use();
