@@ -6,7 +6,7 @@ Welcome to my village!
 Scene with a old houses and cobblestone road.
 Made with C++ using OpenGL, GLFW and GLAD.
 
-[Video preview] (https://www.youtube.com/watch?v=BcJAeoGtAHY)
+[Video preview](https://www.youtube.com/watch?v=BcJAeoGtAHY)
 
 Implemented mandatory lessons + Group A: CubeMaps + Group B: Normal Mapping and Parallax Mapping
 
