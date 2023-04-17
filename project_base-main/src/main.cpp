@@ -134,7 +134,7 @@ int main() {
 
     // glfw window creation
     // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "old neighborhood", NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -215,7 +215,7 @@ int main() {
     streetLamp.SetShaderTextureNamePrefix("material.");
 
     // lada
-    Model lada("resources/objects/lada/vazz.obj");
+    Model lada("resources/objects/lada/Vazz.obj");
     lada.SetShaderTextureNamePrefix("material.");
 
     // well
@@ -567,6 +567,13 @@ int main() {
             streetLamp.Draw(ourShader);
         }
 
+        // tree
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(24.0f, 0.0f, 25.0f));
+        model = glm::scale(model, glm::vec3(1.62f));
+        ourShader.setMat4("model", model);
+        tree.Draw(ourShader);
+
         // vegetation
         vector<glm::vec3> vegetationPositions = {
                 glm::vec3(4.1f, 0.82f, -19.7f),
@@ -594,15 +601,6 @@ int main() {
             blendingShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
-
-        // tree
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(24.0f, 0.0f, 25.0f));
-        model = glm::scale(model, glm::vec3(1.62f));
-        blendingShader.setMat4("model", model);
-        tree.Draw(blendingShader);
-
-
 
         // grass and face culling
         ourShader.use();
